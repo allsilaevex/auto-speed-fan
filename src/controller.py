@@ -1,8 +1,6 @@
 import os
 import re
 
-from datetime import datetime
-
 
 class FanController:
     """
@@ -31,26 +29,17 @@ class FanController:
         res = self.__run_command(self.COMMANDS['normal'])
 
         self.__test(res)
-        self.__print_info('normal')
 
     def max(self):
         """Set max mode"""
         res = self.__run_command(self.COMMANDS['max'])
 
         self.__test(res)
-        self.__print_info('max')
 
     def __test(self, res):
         """Verify success"""
         if not self.success_test.search(res):
             raise RuntimeError(res)
-
-    @staticmethod
-    def __print_info(mode):
-        """Print information"""
-        time = datetime.today().strftime("%d-%m-%Y %H:%M:%S")
-
-        print(f'[{time}] fan speed {mode}')
 
     def __run_command(self, command):
         """Run command from COMMANDS"""
