@@ -1,4 +1,5 @@
 import sys
+import logging
 import argparse
 
 from time import sleep
@@ -20,6 +21,12 @@ class App:
     # Path to fan controller
     controller_path = './fan_controller.pl'
 
+    # Is logging enabled
+    logging = False
+
+    # Path to log file
+    log_path = './app.log'
+
     # Information about the active mode
     max_speed_active = False
 
@@ -29,6 +36,8 @@ class App:
 
         self.sensors = Sensors()
         self.controller = FanController(self.controller_path)
+
+        logging.basicConfig(filename=self.log_path, level=logging.INFO, format='%(message)s')
 
     def run(self):
         """Application run"""
@@ -64,19 +73,28 @@ class App:
         """Parse arguments"""
         parser = argparse.ArgumentParser()
 
+        parser.add_argument('--log', default=self.logging)
+        parser.add_argument('--log_path', default=self.log_path)
+
         parser.add_argument('--path', default=self.controller_path)
         parser.add_argument('--temp', default=self.max_temp_c)
         parser.add_argument('--sleep', default=self.sleep_sec)
 
         params = parser.parse_args(sys.argv[1:])
 
+        self.logging = bool(params.log)
+        self.log_path = str(params.log_path)
+
         self.sleep_sec = int(params.sleep)
         self.max_temp_c = int(params.temp)
         self.controller_path = str(params.path)
 
-    @staticmethod
-    def __print_info(mode, temp):
+    def __print_info(self, mode, temp):
         """Print information"""
         time = datetime.today().strftime("%d-%m-%Y %H:%M:%S")
+        msg = f'[{time}] [+{temp}°C] {mode}'
 
-        print(f'[{time}] [+{temp}°C] {mode}')
+        if self.logging:
+            logging.info(msg)
+
+        print(msg)
