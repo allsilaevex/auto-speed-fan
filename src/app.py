@@ -70,9 +70,9 @@ class App:
 
         params = parser.parse_args(sys.argv[1:])
 
-        self.sleep_sec = params.sleep
-        self.max_temp_c = params.temp
-        self.controller_path = params.path
+        self.sleep_sec = int(params.sleep)
+        self.max_temp_c = int(params.temp)
+        self.controller_path = str(params.path)
 
     @staticmethod
     def __print_info(mode, temp):
